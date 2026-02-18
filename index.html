@@ -2,7 +2,11 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <!-- iOS Safari 特殊配置 -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="爱情空间">
     <title>🟡 孙立璟 & 徐王昕 💛 144件小事</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
@@ -35,6 +39,25 @@
             min-height: 100vh;
             overflow-x: hidden;
             position: relative;
+            /* iOS 安全区域适配 (iPhone X+ 刘海屏) */
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
+            padding-left: env(safe-area-inset-left);
+            padding-right: env(safe-area-inset-right);
+        }
+
+        /* 📱 触摸优化 - 防止双击缩放 */
+        * {
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* 📱 iOS 优化滚动 */
+        .container,
+        .nav-tabs,
+        .photo-wall,
+        .checklist-section {
+            -webkit-overflow-scrolling: touch;
         }
 
         @keyframes gradientShift {
@@ -300,6 +323,82 @@
             100% {
                 transform: translate(var(--tx), var(--ty)) scale(0.5);
                 opacity: 0;
+            }
+        }
+
+        /* 📱 锁屏移动端适配 */
+        @media (max-width: 768px) {
+            .lock-emoji {
+                font-size: 4rem;
+            }
+
+            .lock-title {
+                font-size: 2rem;
+                letter-spacing: 1px;
+            }
+
+            .lock-subtitle {
+                font-size: 1rem;
+            }
+
+            .lock-input {
+                width: 180px;
+                font-size: 1.5rem;
+                padding: 15px 25px;
+                letter-spacing: 6px;
+            }
+
+            .lock-button {
+                padding: 12px 40px;
+                font-size: 1rem;
+            }
+
+            .lock-error {
+                font-size: 0.95rem;
+                padding: 8px 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .lock-emoji {
+                font-size: 3rem;
+                margin-bottom: 20px;
+            }
+
+            .lock-title {
+                font-size: 1.5rem;
+                letter-spacing: 0.5px;
+            }
+
+            .lock-subtitle {
+                font-size: 0.9rem;
+                margin-bottom: 25px;
+            }
+
+            .lock-input {
+                width: 150px;
+                font-size: 1.2rem;
+                padding: 12px 20px;
+                letter-spacing: 4px;
+            }
+
+            .lock-button {
+                padding: 10px 35px;
+                font-size: 0.9rem;
+            }
+
+            .lock-error {
+                font-size: 0.85rem;
+                padding: 6px 14px;
+                margin-top: 15px;
+            }
+
+            .lock-input-row {
+                margin-bottom: 12px;
+            }
+
+            .lock-button-row {
+                margin-top: 8px;
             }
         }
 
@@ -644,17 +743,32 @@
                 transform: scale(0.98);
             }
 
-            /* 增大点击区域 */
+            /* 增大点击区域 - iOS 推荐 44x44px */
             .batch-checkbox {
-                min-width: 30px;
-                min-height: 30px;
+                min-width: 44px;
+                min-height: 44px;
             }
 
             .item-delete-btn,
             .item-edit-btn {
-                min-width: 35px;
-                min-height: 35px;
+                min-width: 44px;
+                min-height: 44px;
                 font-size: 1rem;
+            }
+
+            .photo-action-btn {
+                min-width: 44px;
+                min-height: 44px;
+                font-size: 0.9rem;
+            }
+
+            .nav-tab {
+                min-height: 44px;
+                min-width: 44px;
+            }
+
+            .surprise-button {
+                min-height: 48px;
             }
 
             /* 照片操作按钮始终可见 */
@@ -2746,7 +2860,7 @@
             <h1 class="lock-title">我们的爱情空间</h1>
             <p class="lock-subtitle">请输入相恋日解锁</p>
             <div class="lock-input-row">
-                <input type="password" id="lockPasswordInput" class="lock-input" placeholder="••••" maxlength="4" autocomplete="off">
+                <input type="text" id="lockPasswordInput" class="lock-input" placeholder="••••" maxlength="4" autocomplete="off" inputmode="numeric" pattern="[0-9]*">
             </div>
             <div class="lock-button-row">
                 <button id="lockUnlockBtn" class="lock-button">解锁</button>
