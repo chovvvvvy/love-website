@@ -326,6 +326,136 @@
             }
         }
 
+        /* 🎮 像素爱心粒子 */
+        .pixel-heart-particle {
+            position: fixed;
+            pointer-events: none;
+            z-index: 10001;
+            width: 8px;
+            height: 8px;
+            background: #FF6B6B;
+            animation: pixelHeartExplode 1.5s ease-out forwards;
+        }
+
+        @keyframes pixelHeartExplode {
+            0% {
+                transform: translate(-50%, -50%) scale(0.3) rotate(0deg);
+                opacity: 1;
+            }
+            30% {
+                transform: translate(-50%, -50%) scale(1) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--tx), var(--ty)) scale(3) rotate(var(--rot));
+                opacity: 0;
+            }
+        }
+
+        /* 💖 爱心整体扩大并淡出 */
+        .heart-expand-container {
+            position: fixed;
+            pointer-events: none;
+            z-index: 10001;
+        }
+
+        .pixel-heart-expand {
+            position: absolute;
+            border-radius: 2px;
+            box-shadow: 0 0 5px currentColor;
+        }
+
+        @keyframes heartExpandAndFade {
+            0% {
+                transform: translate(-50%, -50%) scale(0.2);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(5);
+                opacity: 0;
+            }
+        }
+
+        /* ✨ 文字烟花粒子 */
+        .text-firework-particle {
+            position: fixed;
+            pointer-events: none;
+            z-index: 10002;
+            font-size: 20px;
+            font-weight: bold;
+            color: #FF6B6B;
+            text-shadow: 0 0 10px currentColor;
+            animation: textFirework 2s ease-out forwards;
+        }
+
+        @keyframes textFirework {
+            0% {
+                transform: translate(-50%, -50%) scale(0.3);
+                opacity: 1;
+            }
+            30% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--tx), var(--ty)) scale(3);
+                opacity: 0;
+            }
+        }
+
+        /* 🎆 烟花爆炸粒子 */
+        .firework-particle {
+            position: fixed;
+            pointer-events: none;
+            z-index: 10003;
+            animation: fireworkExplode 1.5s ease-out forwards;
+        }
+
+        @keyframes fireworkExplode {
+            0% {
+                transform: translate(-50%, -50%) scale(0);
+                opacity: 1;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) rotate(var(--rot)) scale(0);
+                opacity: 0;
+            }
+        }
+
+        /* 🌟 持续散落粒子 */
+        .falling-particle {
+            position: fixed;
+            pointer-events: none;
+            z-index: 10000;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            animation: falling 4s linear forwards;
+        }
+
+        @keyframes falling {
+            0% {
+                transform: translateY(-10vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(110vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
         /* 📱 锁屏移动端适配 */
         @media (max-width: 768px) {
             .lock-emoji {
@@ -4674,38 +4804,129 @@
                 }
             }
 
-            // 💕 爱心粒子爆炸效果
+            // 💕 爱心绽放 + 烟花效果
             function createHeartExplosion() {
                 const centerX = window.innerWidth / 2;
                 const centerY = window.innerHeight / 2;
 
-                // 创建50个爱心粒子（数量增加）
-                for (let i = 0; i < 50; i++) {
+                // 阶段1: 空心爱心扩大
+                createPixelHeartExplosion(centerX, centerY);
+
+                // 阶段2: 烟花炸开 (立即开始，多次爆炸)
+                // 从四周向中心炸开烟花
+                createFireworkBurst(centerX - 200, centerY - 150);
+                createFireworkBurst(centerX + 200, centerY - 150);
+                createFireworkBurst(centerX - 200, centerY + 150);
+                createFireworkBurst(centerX + 200, centerY + 150);
+                createFireworkBurst(centerX, centerY - 200);
+                createFireworkBurst(centerX, centerY + 200);
+
+                // 阶段3: 持续散落 (4s后)
+                setTimeout(() => {
+                    createFallingParticles();
+                }, 4000);
+            }
+
+            // 🎮 像素爱心绽放（空心轮廓效果）
+            function createPixelHeartExplosion(centerX, centerY) {
+                // 9x8 空心爱心图案（只有轮廓）
+                const heartPattern = [
+                    [0,0,1,1,0,1,1,0,0],
+                    [0,1,1,0,0,0,1,1,0],
+                    [1,1,0,0,0,0,0,1,1],
+                    [1,1,0,0,0,0,0,1,1],
+                    [0,1,1,0,0,0,1,1,0],
+                    [0,0,1,1,0,1,1,0,0],
+                    [0,0,0,1,1,1,0,0,0],
+                    [0,0,0,0,1,0,0,0,0]
+                ];
+
+                const colors = ['#FF6B6B', '#FF5252', '#E53935', '#FF1744'];
+                const pixelSize = 12;
+
+                // 创建一个容器来包裹整个爱心
+                const heartContainer = document.createElement('div');
+                heartContainer.className = 'heart-expand-container';
+                heartContainer.style.left = centerX + 'px';
+                heartContainer.style.top = centerY + 'px';
+                heartContainer.style.animation = 'heartExpandAndFade 4s ease-out forwards';
+                document.body.appendChild(heartContainer);
+
+                heartPattern.forEach((row, i) => {
+                    row.forEach((pixel, j) => {
+                        if (pixel === 1) {
+                            const p = document.createElement('div');
+                            p.className = 'pixel-heart-expand';
+                            p.style.width = pixelSize + 'px';
+                            p.style.height = pixelSize + 'px';
+                            p.style.left = (j - 4) * pixelSize + 'px';
+                            p.style.top = (i - 4) * pixelSize + 'px';
+                            p.style.background = colors[Math.floor(Math.random() * colors.length)];
+                            heartContainer.appendChild(p);
+                        }
+                    });
+                });
+
+                // 4秒后移除容器
+                setTimeout(() => heartContainer.remove(), 4000);
+            }
+
+            // 🎆 烟花爆炸效果
+            function createFireworkBurst(x, y) {
+                const colors = ['#FF6B6B', '#FFD700', '#FF69B4', '#87CEEB', '#98FB98', '#DDA0DD', '#FFA726', '#AB47BC'];
+                const particleCount = 40;
+
+                for (let i = 0; i < particleCount; i++) {
                     setTimeout(() => {
-                        const heart = document.createElement('div');
-                        heart.className = 'heart-particle';
-                        heart.textContent = '💕';
+                        const p = document.createElement('div');
+                        p.className = 'firework-particle';
+                        p.style.left = x + 'px';
+                        p.style.top = y + 'px';
+                        p.style.width = (4 + Math.random() * 4) + 'px';
+                        p.style.height = p.style.width;
+                        p.style.background = colors[Math.floor(Math.random() * colors.length)];
+                        p.style.borderRadius = '50%';
+                        p.style.boxShadow = '0 0 6px ' + p.style.background;
 
-                        // 随机方向和距离（距离增加）
-                        const angle = (Math.PI * 2 * i) / 50;
-                        const distance = 300 + Math.random() * 300;
-                        const tx = Math.cos(angle) * distance + 'px';
-                        const ty = Math.sin(angle) * distance + 'px';
+                        const angle = (Math.PI * 2 / particleCount) * i;
+                        const distance = 100 + Math.random() * 150;
 
-                        heart.style.left = centerX + 'px';
-                        heart.style.top = centerY + 'px';
-                        heart.style.setProperty('--tx', tx);
-                        heart.style.setProperty('--ty', ty);
-                        // 爱心大小改为 40-80px
-                        heart.style.fontSize = (40 + Math.random() * 40) + 'px';
+                        p.style.setProperty('--tx', Math.cos(angle) * distance + 'px');
+                        p.style.setProperty('--ty', Math.sin(angle) * distance + 'px');
+                        p.style.setProperty('--rot', (Math.random() * 360) + 'deg');
 
-                        document.body.appendChild(heart);
+                        document.body.appendChild(p);
+                        setTimeout(() => p.remove(), 1500);
+                    }, i * 10);
+                }
+            }
 
-                        // 动画结束后移除元素
-                        setTimeout(() => {
-                            heart.remove();
-                        }, 2000);
-                    }, i * 15);
+            // 🌟 持续散落效果
+            function createFallingParticles() {
+                const colors = ['#FFD700', '#FF69B4', '#87CEEB', '#98FB98', '#DDA0DD'];
+                const shapes = ['●', '♦', '★', '♥', '✿'];
+
+                // 持续产生 15 秒
+                const duration = 15000;
+                const interval = 100;
+                const iterations = duration / interval;
+
+                for (let i = 0; i < iterations; i++) {
+                    setTimeout(() => {
+                        for (let j = 0; j < 3; j++) {
+                            const p = document.createElement('div');
+                            p.className = 'falling-particle';
+                            p.textContent = shapes[Math.floor(Math.random() * shapes.length)];
+                            p.style.left = Math.random() * 100 + 'vw';
+                            p.style.top = '-20px';
+                            p.style.color = colors[Math.floor(Math.random() * colors.length)];
+                            p.style.animationDuration = (3 + Math.random() * 3) + 's';
+                            p.style.fontSize = (10 + Math.random() * 15) + 'px';
+
+                            document.body.appendChild(p);
+                            setTimeout(() => p.remove(), 6000);
+                        }
+                    }, i * interval);
                 }
             }
 
@@ -4714,11 +4935,11 @@
                 // 播放爱心爆炸效果
                 createHeartExplosion();
 
-                // 延迟隐藏锁屏，让用户看到爱心效果
+                // 延迟隐藏锁屏，让用户看到完整的爱心爆炸效果
                 setTimeout(() => {
                     lockScreen.classList.add('hidden');
                     console.log('🔓 解锁成功');
-                }, 300);
+                }, 1000);
             }
 
             // 显示错误
