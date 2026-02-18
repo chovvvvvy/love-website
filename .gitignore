@@ -30,5 +30,8 @@ desktop.ini
 # 其他Git仓库
 everything-claude-code/
 
+# Claude Code 本地配置
+.claude/settings.local.json
+
 # 本地数据文件夹（包含照片等隐私数据）
 data/
