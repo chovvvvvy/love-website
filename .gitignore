@@ -34,4 +34,4 @@ everything-claude-code/
 .claude/settings.local.json
 
 # 本地数据文件夹（包含照片等隐私数据）
-data/
+# 注意：data/ 目录已通过上面的例外规则保留必要的 JSON 文件
