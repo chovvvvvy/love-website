@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx skills add:*)",
+      "Bash(git clone:*)",
+      "Bash(done)",
+      "Bash(python manager.py:*)",
+      "Bash(node:*)",
+      "Bash(python:*)",
+      "Bash(git init:*)",
+      "Bash(git add:*)",
+      "Bash(git rm:*)",
+      "Bash(git commit:*)",
+      "Bash(git config:*)",
+      "Bash(git branch:*)",
+      "Bash(git remote add:*)",
+      "Bash(git push:*)",
+      "Bash(netstat:*)",
+      "Bash(findstr:*)",
+      "Bash(pip install:*)",
+      "Bash(ipconfig:*)",
+      "Bash(netsh advfirewall firewall add rule:*)",
+      "Bash(del server.py requirements.txt start.bat start.sh 启动服务器.bat 启动并调试.bat 应用优化.bat 配置防火墙.bat 检查网络.bat enable_server_mode.py enable_server_mode.bat)"
+    ]
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "name": "love-website",
+  "version": "1.0.0",
+  "type": "commonjs",
+  "description": "Love Website",
+  "scripts": {
+    "regenerate-thumbnails": "node regenerate_thumbnails.js"
+  },
+  "devDependencies": {
+    "sharp": "^0.33.0"
+  }
+}
